@@ -1,0 +1,38 @@
+{
+  "name": "generalapi",
+  "version": "1.0.0",
+  "description": "This is a general API for school projects",
+  "keywords": [
+    "NODEJS",
+    "Backend",
+    "Server",
+    "MySQL"
+  ],
+  "homepage": "https://github.com/additivepill62/GeneralAPI#readme",
+  "bugs": {
+    "url": "https://github.com/additivepill62/GeneralAPI/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/additivepill62/GeneralAPI.git"
+  },
+  "license": "ISC",
+  "author": "GYDG",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon server.js",
+    "start":"node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "mysql": "^2.18.1",
+    "sha1": "^1.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.10"
+  }
+}
