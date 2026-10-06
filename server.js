@@ -65,7 +65,7 @@ app.get('/', (req, res) => {
 })
 
 //Routes
-app.use('/table', tableRoutes)
+app.use('/', tableRoutes)
 app.use('/email', emailRoutes)
 app.use('/file', fileRoutes)
 app.use('/auth', authRoutes)
