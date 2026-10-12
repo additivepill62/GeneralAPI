@@ -1,0 +1,55 @@
+### get all records from table
+GET  http://localhost:4444/steps
+Content-Type: application/json
+
+### select spec record by id
+GET http://localhost:4444/steps/75
+Content-Type: application/json
+
+### Get records by field
+GET http://localhost:4444/steps/user_id/52
+Content-Type: application/json
+
+### Get records by field and operator
+GET http://localhost:4444/steps/step_count/gt/5000
+Content-Type: application/json
+### add a new record
+POST http://localhost:4444/steps
+Content-Type: application/json
+
+{
+    "user_id":54,
+    "step_count":6000,
+    "date":"2026-10-12"
+}
+
+###update spec rec by id
+PATCH http://localhost:4444/steps/75
+Content-Type: application/json
+
+{
+    "step_count":100
+}
+###update records by field and operator
+PATCH http://localhost:4444/steps/step_count/lt/10000
+Content-Type: application/json
+
+{
+    "step_count":9999
+}
+
+###delete all records from a table
+DELETE http://localhost:4444/steps
+Content-Type: application/json
+
+###delete a specific record by ID
+DELETE http://localhost:4444/steps/3
+Content-Type: application/json
+
+###Delete records by field
+DELETE http://localhost:4444/steps/user_id/3
+Content-Type: application/json
+
+###Delete records by field and operator
+DELETE http://localhost:4444/steps/step_count/lt/3000
+Content-Type: application/json

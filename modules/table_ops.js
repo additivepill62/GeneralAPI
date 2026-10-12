@@ -1,19 +1,21 @@
 const express = require('express')
 const router = express.Router()
 var db = require('../utils/database.js')
+
+// Get all records from a table
 router.get('/:table', (req, res) => {
     var table = req.params.table
 
     db.query(`SELECT * FROM ${table}`, (err, results) => {
         if (err) {
-            res.status(500).json({ error: '[GETAllRecordsError] Database query error' })
+            res.status(500).json({ error: '[GETAllRecordsError] Database query error ' + err.message })
         } else {
             res.status(200).json(results)
         }
     })
 })
 
-
+// Get a specific record by ID
 router.get('/:table/:id', (req, res) => {
     var table = req.params.table
     var id = req.params.id
@@ -27,7 +29,7 @@ router.get('/:table/:id', (req, res) => {
     })
 
 })
-
+// Get records by field
 router.get('/:table/:field/:value',(req, res)=>{
     let table = req.params.table
     let field = req.params.field
@@ -41,12 +43,15 @@ router.get('/:table/:field/:value',(req, res)=>{
         }
     })
 })
-
+// Get records by field and operator
 router.get('/:table/:field/:operator/:value', (req, res) => {
     let table = req.params.table;
     let field = req.params.field;
     let operator = req.params.operator;
     let value = req.params.value;
+    if (operator === 'LIKE' || operator === 'NOT LIKE') {
+        value = '%'+value+'%';
+    }
 
     let op = getOps(operator);
     if (!op) {
@@ -61,7 +66,7 @@ router.get('/:table/:field/:operator/:value', (req, res) => {
         }
     })
 });
-
+// Insert a new record into a table
 router.post('/:table', (req, res) => {
     let table = req.params.table
     let data = req.body
@@ -77,7 +82,7 @@ router.post('/:table', (req, res) => {
 
     })
 })
-
+// Update records by ID
 router.patch('/:table/:id', (req, res) => {
     let table = req.params.table
     let id = req.params.id
@@ -94,6 +99,56 @@ router.patch('/:table/:id', (req, res) => {
     })
 })
 
+
+
+// Update records by field
+router.patch('/:table/:field/:value',(req, res)=>{
+    let table = req.params.table
+    let field = req.params.field
+    let value = req.params.value
+    let data = req.body
+
+    let updates = Object.entries(data).map(([key, value]) => `${key} = '${value}'`).join(', ')
+
+    db.query(`UPDATE ${table} SET ${updates} WHERE ${field} = ?`, [value], (err, results)=>{
+        if(err){
+            return res.status(500).json({error: '[UPDATERecordsByFieldError] Database query error ' +err.message})
+        } else{
+            return res.status(200).json({message: '[UPDATERecordsByFieldSuccess] Records updated successfully'})
+        }
+    })
+})
+
+// Update records by field and operator
+router.patch('/:table/:field/:operator/:value',(req, res)=>{
+    let table = req.params.table
+    let field = req.params.field
+    let operator = getOps(req.params.operator)
+    let value = req.params.value
+    let data = req.body
+    if (operator === 'LIKE' || operator === 'NOT LIKE') {
+        value = '%'+req.params.value+'%';
+    }
+    let updates = Object.entries(data).map(([key, value]) => `${key} = '${value}'`).join(', ')
+
+    db.query(`UPDATE ${table} SET ${updates} WHERE ${field} ${operator} ?`, [value], (err, results)=>{
+        if(err){
+            return res.status(500).json({error: '[UPDATERecordsByFieldError] Database query error ' +err.message})
+        } else{
+            return res.status(200).json({message: '[UPDATERecordsByFieldSuccess] Records updated successfully'})
+        }
+    })
+})
+
+
+
+
+
+
+
+
+
+// Delete all records from a table
 router.delete('/:table', (req, res) => {
     let table = req.params.table
 
@@ -107,7 +162,7 @@ router.delete('/:table', (req, res) => {
 
 
 })
-
+// Delete a specific record by ID
 router.delete('/:table/:id', (req, res) => {
     let table = req.params.table
     let id = req.params.id
@@ -121,6 +176,42 @@ router.delete('/:table/:id', (req, res) => {
     })
 })
 
+// Delete records by field
+router.delete('/:table/:field/:value',(req, res)=>{
+    let table = req.params.table
+    let field = req.params.field
+    let value = req.params.value
+
+    db.query(`DELETE FROM ${table} WHERE ${field} = ?`, [value], (err, results)=>{
+        if(err){
+            return res.status(500).json({error: '[DELETERecordsByFieldError] Database query error ' +err})
+        } else{
+            return res.status(200).json({message: '[DELETERecordsByFieldSuccess] Records deleted successfully'})
+        }
+    })
+})
+// Delete records by field and operator
+router.delete('/:table/:field/:operator/:value', (req, res) => {
+    let table = req.params.table
+    let field = req.params.field
+    let operator = getOps(req.params.operator)
+    let value = req.params.value
+    if (operator === 'LIKE' || operator === 'NOT LIKE') {
+        value = '%'+req.params.value+'%';
+    }
+
+    if (!operator) {
+        return res.status(400).json({ error: 'Invalid operator' });
+    }
+
+    db.query(`DELETE FROM ${table} WHERE ${field} ${operator} ?`, [value], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: '[DELETERecordsByOperatorError] Database query error: ' + err.message });
+        } else {
+            return res.status(200).json({ message: '[DELETERecordsByOperatorSuccess] Records deleted successfully' });
+        }
+    })
+});
 
 function getOps(op) {
     switch (op) {
@@ -136,9 +227,11 @@ function getOps(op) {
             return ' >= ';
         case 'ne':
             return '!=';
-        case 'like':
+        case 'LK':
             return 'LIKE';
-        case 'not':
+        case 'nlk':
+            return 'NOT LIKE';
+        case 'nt':
             return 'NOT';
         default:
             throw new Error('Invalid operator');
