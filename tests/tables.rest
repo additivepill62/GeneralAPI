@@ -1,20 +1,23 @@
+@host = http://localhost:
+@port = 4444
+@server={{host}}:{{port}}
 ### get all records from table
-GET  http://localhost:4444/steps
+GET  {{server}}/steps
 Content-Type: application/json
 
 ### select spec record by id
-GET http://localhost:4444/steps/75
+GET {{server}}/steps/75
 Content-Type: application/json
 
 ### Get records by field
-GET http://localhost:4444/steps/user_id/52
+GET {{server}}/steps/user_id/52
 Content-Type: application/json
 
 ### Get records by field and operator
-GET http://localhost:4444/steps/step_count/gt/5000
+GET {{server}}/steps/step_count/gt/5000
 Content-Type: application/json
 ### add a new record
-POST http://localhost:4444/steps
+POST {{server}}/steps
 Content-Type: application/json
 
 {
@@ -24,14 +27,14 @@ Content-Type: application/json
 }
 
 ###update spec rec by id
-PATCH http://localhost:4444/steps/75
+PATCH {{server}}/steps/75
 Content-Type: application/json
 
 {
     "step_count":100
 }
 ###update records by field and operator
-PATCH http://localhost:4444/steps/step_count/lt/10000
+PATCH {{server}}/steps/step_count/lt/10000
 Content-Type: application/json
 
 {
@@ -39,17 +42,17 @@ Content-Type: application/json
 }
 
 ###delete all records from a table
-DELETE http://localhost:4444/steps
+DELETE {{server}}/steps
 Content-Type: application/json
 
 ###delete a specific record by ID
-DELETE http://localhost:4444/steps/3
+DELETE {{server}}/steps/3
 Content-Type: application/json
 
 ###Delete records by field
-DELETE http://localhost:4444/steps/user_id/3
+DELETE {{server}}/steps/user_id/3
 Content-Type: application/json
 
 ###Delete records by field and operator
-DELETE http://localhost:4444/steps/step_count/lt/3000
+DELETE {{server}}/steps/step_count/lt/3000
 Content-Type: application/json
