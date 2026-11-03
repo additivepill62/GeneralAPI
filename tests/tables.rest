@@ -1,13 +1,17 @@
-@host = http://localhost:
+@host = http://localhost
 @port = 4444
 @server={{host}}:{{port}}
+
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc5MzcwMTMwMiwiZXhwIjoxNzkzNzA0OTAyfQ.CEtfMCjDsHJmoEHxmHXWWEHIhduon2GW1Kqrjq1oPD4
 ### get all records from table
 GET  {{server}}/steps
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
-### select spec record by id
+### select specific record by id
 GET {{server}}/steps/75
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Get records by field
 GET {{server}}/steps/user_id/52
