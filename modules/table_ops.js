@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 var db = require('../utils/database.js')
-const {tokenCheck} = require('../utils/jwt.js')
+const {tokenCheck, adminCheck} = require('../utils/jwt.js')
 
 
 const publicTables = process.env.PUBLIC_TABLES ? process.env.PUBLIC_TABLES.split(',').map(table => table.trim()) : []
@@ -153,7 +153,7 @@ router.get('/:table/:field/:operator/:value', tokenCheck, (req, res) => {
     })
 });
 // Insert a new record into a table
-router.post('/:table', (req, res) => {
+router.post('/:table', tokenCheck, (req, res) => {
     let table = req.params.table
     let data = req.body
 
@@ -169,7 +169,7 @@ router.post('/:table', (req, res) => {
     })
 })
 // Update records by ID
-router.patch('/:table/:id', (req, res) => {
+router.patch('/:table/:id', tokenCheck, (req, res) => {
     let table = req.params.table
     let id = req.params.id
     let data = req.body
@@ -188,7 +188,7 @@ router.patch('/:table/:id', (req, res) => {
 
 
 // Update records by field
-router.patch('/:table/:field/:value', (req, res) => {
+router.patch('/:table/:field/:value', tokenCheck, (req, res) => {
     let table = req.params.table
     let field = req.params.field
     let value = req.params.value
@@ -206,7 +206,7 @@ router.patch('/:table/:field/:value', (req, res) => {
 })
 
 // Update records by field and operator
-router.patch('/:table/:field/:operator/:value', (req, res) => {
+router.patch('/:table/:field/:operator/:value', tokenCheck, (req, res) => {
     let table = req.params.table
     let field = req.params.field
     let operator = getOps(req.params.operator)
@@ -235,7 +235,7 @@ router.patch('/:table/:field/:operator/:value', (req, res) => {
 
 
 // Delete all records from a table
-router.delete('/:table', (req, res) => {
+router.delete('/:table', tokenCheck, adminCheck, (req, res) => {
     let table = req.params.table
 
     db.query(`DELETE FROM ${table}`, (err, results) => {
@@ -249,7 +249,7 @@ router.delete('/:table', (req, res) => {
 
 })
 // Delete a specific record by ID
-router.delete('/:table/:id', (req, res) => {
+router.delete('/:table/:id', tokenCheck, adminCheck, (req, res) => {
     let table = req.params.table
     let id = req.params.id
 
@@ -263,7 +263,7 @@ router.delete('/:table/:id', (req, res) => {
 })
 
 // Delete records by field
-router.delete('/:table/:field/:value', (req, res) => {
+router.delete('/:table/:field/:value', tokenCheck, adminCheck, (req, res) => {
     let table = req.params.table
     let field = req.params.field
     let value = req.params.value
@@ -277,7 +277,7 @@ router.delete('/:table/:field/:value', (req, res) => {
     })
 })
 // Delete records by field and operator
-router.delete('/:table/:field/:operator/:value', (req, res) => {
+router.delete('/:table/:field/:operator/:value', tokenCheck, adminCheck, (req, res) => {
     let table = req.params.table
     let field = req.params.field
     let operator = getOps(req.params.operator)

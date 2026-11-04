@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const SHA1=require('sha1')
 var db = require('../utils/database.js')
+const { generateToken, verifyToken, tokenCheck, adminCheck } = require('../utils/jwt.js')
+
 //login
 router.post('/login', (req, res)=>{
     let table ='users'
@@ -14,13 +16,21 @@ router.post('/login', (req, res)=>{
 
     db.query(`SELECT * FROM ${table} WHERE email=? AND password=?`, [email,SHA1(password)], (err, results)=>{
         if(err){
-            return res.status(500).json({error: err.error})
+            return res.status(500).json({error: err.message})
         }
 
-        //TODO: logged in -> token generation
+        if(results.length === 0){
+            return res.status(401).json({error: 'Invalid email or password' +err})
+        }
+
+        const token = generateToken({
+            id: results[0].id,
+            name: results[0].name,
+            email: results[0].email,
+            role: results[0].role
+        });
+        return res.status(200).json({token})
     })
-
-
 
 })
 
