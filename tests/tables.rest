@@ -14,8 +14,8 @@ POST {{server}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "admin2@admin.test",
-    "password": "Admin@123"
+    "email": "tesztelemanyadat@gmail.com",
+    "password": "TitkosJelszo2026!"
 }
 
 ### Register a new user
@@ -27,7 +27,7 @@ Content-Type: application/json
  
 {
     "name": "Teszt Elek",
-    "email": "tesztelek@gmail.com",
+    "email": "tesztelemanyadat",
     "password": "TitkosJelszo2026!",
     "confirm": "TitkosJelszo2026!"
 }
