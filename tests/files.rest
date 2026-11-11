@@ -1,0 +1,30 @@
+@host = http://localhost
+@port = 4444
+@server= {{host}}:{{port}}
+@fileName =hamburgur.png
+@fileName2 =test.pdf
+
+###file upload
+POST {{server}}/file/upload
+Content-Type: multipart/form-data; boundary=----Myboundary
+
+title
+------Myboundary
+Content-Disposition: form-data; name="file"; filename="{{fileName}}"
+Content-Type: image/png
+
+< ./{{fileName}}
+------Myboundary--
+
+
+###file upload2
+POST {{server}}/file/upload
+Content-Type: multipart/form-data; boundary=----Myboundary2
+
+title
+------Myboundary2
+Content-Disposition: form-data; name="file"; filename="{{fileName2}}"
+Content-Type: application/pdf
+
+< ./{{fileName2}}
+------Myboundary2--
